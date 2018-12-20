@@ -1,5 +1,7 @@
 package binance.bot.core;
 
+import binance.bot.db.DateFormatter;
+import binance.bot.db.DbUtils;
 import binance.bot.db.Repository;
 import binance.bot.db.ResultTransformer;
 
@@ -11,7 +13,22 @@ import java.util.Set;
 public class OrderRepository extends Repository {
 
     public void saveOrder(Order order) {
-        String sql = "INSERT INTO Orders(currency, amount) VALUES (" + order.getCurrency() + ", " + order.getAmount() + ")";
+        String sql = "INSERT INTO Orders(" +
+                "binanceId, " +
+                "pair, " +
+                "amount, " +
+                "direction, " +
+                "date " +
+
+
+                ") VALUES ("
+
+                + order.getBinanceId() + ", "
+                + DbUtils.addQuotes(order.getPair()) + ", "
+                + order.getAmount() + ", "
+                + DbUtils.addQuotes(order.getDirection().toString()) + ", "
+                + DbUtils.addQuotes(DateFormatter.formatDate(order.getDate())) +
+                ")";
         executeUpdate(sql);
     }
 
@@ -26,9 +43,20 @@ public class OrderRepository extends Repository {
 
               try {
                 while(resultSet.next()){
-                    String currency = resultSet.getString("currency");
-                    int amount = resultSet.getInt("amount");
-                    orders.add(new Order(currency, amount));
+                    int binanceId = resultSet.getInt("binanceId");
+                    String pair = resultSet.getString("pair");
+                    double amount = resultSet.getDouble("amount");
+                    OrderDirection orderDirection = OrderDirection.valueOf(resultSet.getString("direction"));
+                    String date = resultSet.getString("date");
+
+                    Order order = new Order();
+                    order.setBinanceId(binanceId);
+                    order.setPair(pair);
+                    order.setAmount(amount);
+                    order.setDirection(orderDirection);
+                    order.setDate(DateFormatter.parseDate(date));
+
+                    orders.add(order);
                 }
             } catch (SQLException e) {
                   throw new RuntimeException(e);

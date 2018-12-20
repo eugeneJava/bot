@@ -29,7 +29,7 @@ public enum  ConnectionPool {
     }
 
     private String getConnectionString(DbConfiguration dbConfiguration) {
-        String connectionString = String.format("jdbc:mysql://%s:3306/%s", dbConfiguration.getHost(), dbConfiguration.getDbName());
+        String connectionString = String.format("jdbc:mysql://%s:3306/%s?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", dbConfiguration.getHost(), dbConfiguration.getDbName());
         return connectionString;
     }
 

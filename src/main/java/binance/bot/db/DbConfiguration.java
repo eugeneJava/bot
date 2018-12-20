@@ -15,7 +15,7 @@ public class DbConfiguration {
     private void load() {
         try {
             Properties properties = new Properties();
-            properties.load(DbConfiguration.class.getResourceAsStream("db.properties"));
+            properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("db.properties"));
             host = properties.getProperty("host", "localhost");
             dbName = properties.getProperty("dbName", "binanceBot");
             user = properties.getProperty("user", "admin");
