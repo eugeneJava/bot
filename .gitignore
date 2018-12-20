@@ -1,3 +1,5 @@
 .idea/*
 binance.bot.iml
 target/*
+src/main/resources/db.properties
+
